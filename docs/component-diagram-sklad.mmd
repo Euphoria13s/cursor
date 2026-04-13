@@ -1,0 +1,38 @@
+%% Система учёта складских запасов — диаграмма компонентов (Mermaid graph LR)
+%% Стек: Django 5 + DRF | Vue 3 + Pinia + Vue Router | SQLite
+
+graph LR
+  %% ========= Frontend =========
+  subgraph FE["Frontend · Vue.js 3"]
+    direction TB
+    VC["Vue Components"]
+    VR["Vue Router"]
+    PS["Pinia Store"]
+    AX["Axios"]
+    VC -->|"навигация"| VR
+    VC <-->|"состояние UI"| PS
+    PS -->|"HTTP-вызовы API"| AX
+  end
+
+  %% ========= Backend =========
+  subgraph BE["Backend · Django 5 + DRF"]
+    direction TB
+    MW["Middleware"]
+    DU["Django URLs"]
+    VW["Views / ViewSets"]
+    SR["Serializers"]
+    MD["Models"]
+    MW --> DU
+    DU --> VW
+    VW <-->|"валидация / сериализация"| SR
+    VW <-->|"бизнес-данные"| MD
+  end
+
+  %% ========= Database =========
+  subgraph DB["Database"]
+    SQLITE[("SQLite\nфайл db.sqlite3")]
+  end
+
+  %% ========= Межблочные потоки =========
+  AX <-->|"HTTP Request / Response\nтело: JSON"| MW
+  MD <-->|"ORM-запросы\nSELECT / INSERT / UPDATE / DELETE"| SQLITE

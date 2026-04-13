@@ -1,0 +1,84 @@
+@startuml Система_учёта_складских_запасов___варианты_использования
+title Система учёта складских запасов — диаграмма вариантов использования
+skinparam packageStyle rectangle
+left to right direction
+
+actor "Кладовщик" as Storekeeper
+actor "Менеджер по закупкам" as Buyer
+actor "Администратор\nсистемы" as Admin
+
+rectangle "Система учёта складских запасов" {
+  usecase UC_AUTH as "Авторизация в системе"
+  usecase UC_STOCK as "Просмотр текущих остатков"
+  usecase UC_RECEIPT as "Регистрация поступления\nтоваров на склад"
+  usecase UC_WRITEOFF as "Регистрация списания\nтоваров со склада"
+  usecase UC_VIEW_REC as "Просмотр документов\nпоступления"
+  usecase UC_VIEW_WO as "Просмотр документов\nсписания"
+  usecase UC_PRODUCTS as "Ведение справочника товаров"
+  usecase UC_CATS as "Ведение категорий товаров"
+  usecase UC_MIN as "Настройка минимального запаса\nпо товару"
+  usecase UC_REPORT as "Формирование отчёта\nпо движению за период"
+  usecase UC_USERS as "Управление пользователями"
+  usecase UC_ROLES as "Настройка ролей\nи прав доступа"
+  usecase UC_SEARCH as "Поиск и фильтрация товаров"
+  usecase UC_VALIDATE as "Проверка корректности\nданных документа"
+  usecase UC_ALERT as "Контроль критичного уровня\nостатка (ниже минимума)"
+  usecase UC_EXPORT as "Экспорт отчёта\nв файл"
+}
+
+' --- Акторы ↔ варианты использования (инициирование) ---
+Storekeeper --> UC_STOCK
+Storekeeper --> UC_WRITEOFF
+Storekeeper --> UC_VIEW_REC
+Storekeeper --> UC_VIEW_WO
+Storekeeper --> UC_REPORT
+Storekeeper --> UC_SEARCH
+
+Buyer --> UC_STOCK
+Buyer --> UC_RECEIPT
+Buyer --> UC_VIEW_REC
+Buyer --> UC_VIEW_WO
+Buyer --> UC_PRODUCTS
+Buyer --> UC_CATS
+Buyer --> UC_MIN
+Buyer --> UC_REPORT
+Buyer --> UC_SEARCH
+
+Admin --> UC_STOCK
+Admin --> UC_RECEIPT
+Admin --> UC_WRITEOFF
+Admin --> UC_VIEW_REC
+Admin --> UC_VIEW_WO
+Admin --> UC_PRODUCTS
+Admin --> UC_CATS
+Admin --> UC_MIN
+Admin --> UC_REPORT
+Admin --> UC_SEARCH
+Admin --> UC_USERS
+Admin --> UC_ROLES
+
+' --- <<include>> : базовый сценарий обязательно включает общий/вспомогательный ---
+UC_RECEIPT ..> UC_AUTH : <<include>>
+UC_WRITEOFF ..> UC_AUTH : <<include>>
+UC_PRODUCTS ..> UC_AUTH : <<include>>
+UC_CATS ..> UC_AUTH : <<include>>
+UC_USERS ..> UC_AUTH : <<include>>
+UC_ROLES ..> UC_AUTH : <<include>>
+
+UC_RECEIPT ..> UC_VALIDATE : <<include>>
+UC_WRITEOFF ..> UC_VALIDATE : <<include>>
+
+' --- <<extend>> : опциональное расширение при выполнении условия ---
+UC_ALERT ..> UC_STOCK : <<extend>>
+note right of UC_ALERT
+  Расширяет просмотр остатков
+  при условии: остаток < минимума
+end note
+
+UC_EXPORT ..> UC_REPORT : <<extend>>
+note right of UC_EXPORT
+  Расширяет отчёт
+  при выборе пользователем экспорта
+end note
+
+@enduml
