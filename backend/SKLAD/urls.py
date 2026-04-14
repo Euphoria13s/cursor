@@ -25,3 +25,19 @@ urlpatterns = [
     path('health/', health, name='health'),
     path('', include(router.urls)),
 ]
+    WriteoffLineViewSet,
+    WriteoffViewSet,
+)
+
+router = DefaultRouter()
+router.register('categories', CategoryViewSet, basename='category')
+router.register('products', ProductViewSet, basename='product')
+router.register('receipts', ReceiptViewSet, basename='receipt')
+router.register('receipt-lines', ReceiptLineViewSet, basename='receiptline')
+router.register('writeoffs', WriteoffViewSet, basename='writeoff')
+router.register('writeoff-lines', WriteoffLineViewSet, basename='writeoffline')
+
+urlpatterns = [
+    path('health/', health, name='health'),
+    path('', include(router.urls)),
+]
